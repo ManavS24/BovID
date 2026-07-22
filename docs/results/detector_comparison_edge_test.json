@@ -1,0 +1,34 @@
+[
+  {
+    "detector": "models/pretrained/yolov8x.pt",
+    "size_mb": 136.9,
+    "detect_rate": 0.939,
+    "top1": 0.485,
+    "top3": 0.848,
+    "detect_ms": 148.6,
+    "agree_with_baseline": 1.0,
+    "median_iou_vs_baseline": 1.0
+  },
+  {
+    "detector": "models/pretrained/yolov8n.pt",
+    "size_mb": 6.5,
+    "detect_rate": 0.697,
+    "top1": 0.515,
+    "top3": 0.848,
+    "detect_ms": 24.4,
+    "agree_with_baseline": 0.818,
+    "median_iou_vs_baseline": 0.932,
+    "both_detected": 22
+  },
+  {
+    "detector": "models/pretrained/yolov8n_float32.tflite",
+    "size_mb": 12.9,
+    "detect_rate": 0.697,
+    "top1": 0.515,
+    "top3": 0.848,
+    "detect_ms": 130.1,
+    "agree_with_baseline": 0.818,
+    "median_iou_vs_baseline": 0.932,
+    "both_detected": 22
+  }
+]

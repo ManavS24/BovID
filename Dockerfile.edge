@@ -1,0 +1,26 @@
+# Slim edge image: the torch-free TFLite pipeline, the way a device runs it.
+#   docker build -f Dockerfile.edge -t bovid-edge .
+#   docker run --rm -v "$PWD/photo.jpg:/app/photo.jpg" bovid-edge predict --edge photo.jpg
+#
+# No torch, no TensorFlow -- only ai-edge-litert + numpy + OpenCV. Ships just the two tiny TFLite
+# models (~33 MB) instead of the 137 MB server detector.
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY bovid ./bovid
+RUN pip install --no-cache-dir ".[edge]"
+
+# Only the edge artifacts: the tiny TFLite detector + classifier and their metadata.
+COPY models/pretrained/yolov8n_float32.tflite models/pretrained/yolov8n_float32.tflite
+COPY models/pretrained/yolov8n_names.yaml models/pretrained/yolov8n_names.yaml
+COPY models/best/best_float32.tflite models/best/best_float32.tflite
+COPY models/best/best_saved_model/metadata.yaml models/best/best_saved_model/metadata.yaml
+
+ENTRYPOINT ["bovid"]
+CMD ["--help"]

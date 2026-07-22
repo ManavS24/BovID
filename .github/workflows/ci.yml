@@ -1,0 +1,58 @@
+name: CI
+
+# Lint + tests on every push and PR. Kept green on a bare checkout: the 137 MB yolov8x detector
+# exceeds GitHub's 100 MB file limit, so it is not in the repo and the tests that need it SKIP
+# rather than fail (see tests/_bovid_reqs.py). What CI proves on every push: the code lints, the
+# pure logic is correct, and the torch-free edge pipeline (its tiny models ARE committed) works
+# end to end. Full server-path + training tests run locally where the big weights are present.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3     # ruff config lives in pyproject.toml [tool.ruff]
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Python 3.12 deliberately: TensorFlow (needed for the TFLite edge tests) has no wheel for
+      # 3.13/3.14. The local dev venv runs 3.14 and skips those tests; CI is where they actually
+      # execute, so it must be on a TF-supported Python.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install (edge + server + app + audit + dev)
+        # Editable, with the edge runtime, the server/torch path, and TensorFlow so the
+        # TFLite<->torch parity and edge-pipeline tests run rather than skip. app brings streamlit
+        # (headless AppTest e2e); audit brings pytesseract so the classify() unit tests run (the
+        # tesseract binary is only needed by the OCR path, which is not unit-tested).
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[edge,server,app,audit,dev]" tensorflow
+
+      - name: Type-check (mypy)
+        # Runs here rather than in the lint job because mypy follows imports into the installed
+        # deps (numpy/cv2/...) and needs them present. Config lives in pyproject [tool.mypy];
+        # non-strict, so it catches real bugs without demanding a full annotation pass.
+        run: mypy bovid scripts app.py tests
+
+      - name: Run tests (skip the slow training/subprocess suite)
+        # -m "not slow" excludes the tiny-train and subprocess-e2e cases (minutes, and the latter
+        # need the big detector). Everything else -- unit, integration, edge parity -- runs; any
+        # test whose weights are absent skips cleanly, so a missing yolov8x cannot turn CI red.
+        run: pytest -q -m "not slow"

@@ -1,0 +1,17 @@
+# Flexible development install (compatible version ranges from pyproject.toml).
+#
+#   core        the torch-free edge pipeline only (opencv, Pillow, numpy, PyYAML)
+#   [server]    ultralytics/torch: training, evaluation, the server inference path
+#   [app]       Streamlit demo (app.py)
+#   [audit]     dataset watermark audit (`bovid audit`; needs `brew install tesseract`)
+#   [export]    ONNX/TFLite export (TFLite/SavedModel additionally need TensorFlow, Python 3.12)
+#   [dev]       test suite + ruff
+#   [edge]      the on-device runtime (ai-edge-litert; installs on Python 3.10-3.14, no torch)
+#
+# For an EXACT, reproducible build use the lock file instead:
+#     pip install -e . -r requirements-lock.txt
+#
+# On a device, install only the light path (no torch):
+#     pip install "bovid[edge]"
+#     bovid predict --edge photo.jpg
+-e .[server,app,audit,export,dev,edge]

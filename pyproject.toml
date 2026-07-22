@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bovid"
+version = "1.0.0"
+description = "Indian bovine breed classification (detect -> crop -> classify), built for offline edge use"
+readme = "README.md"
+requires-python = ">=3.10"
+# Core = exactly what the torch-free edge pipeline (bovid.edge) needs, and nothing more.
+# ultralytics/torch are deliberately NOT here: they are ~1 GB installed and do not install on the
+# phones and small boards this targets, so `pip install bovid[edge]` must not drag them in.
+# Measured: the edge path imports neither (pinned by a subprocess test in tests/integration_tests.py).
+dependencies = [
+    "opencv-python>=4.9",
+    "Pillow>=10.0",
+    "numpy>=1.26",
+    "PyYAML>=6.0",          # class names + export metadata; was previously only transitive via ultralytics
+]
+
+[project.scripts]
+bovid = "bovid.cli:main"
+
+[project.optional-dependencies]
+# The TFLite interpreter for on-device inference. ai-edge-litert is the maintained standalone
+# runtime (no TensorFlow); bovid.tflite_backend falls back to tf.lite when only TF is present.
+edge = ["ai-edge-litert>=1.0"]
+# Training, evaluation and the torch-based inference path.
+server = ["ultralytics==8.3.195", "pandas>=2.0", "tqdm>=4.65", "scikit-learn>=1.3"]
+app = ["streamlit>=1.35"]
+audit = ["pytesseract>=0.3.10"]          # also needs the tesseract binary (brew install tesseract)
+export = ["onnx>=1.16", "onnxruntime>=1.17", "onnxslim>=0.1.67", "onnxscript>=0.1",
+          "onnx2tf>=1.20", "onnx-graphsurgeon>=0.5", "sng4onnx>=1.0"]   # TFLite/SavedModel also need TensorFlow (no wheel on Python 3.14 -- see METHODOLOGY §2)
+experiments = ["matplotlib>=3.7", "seaborn>=0.12", "torchvision>=0.15"]
+dev = ["pytest>=7.0", "ruff>=0.6", "mypy>=1.11"]
+
+[tool.setuptools]
+packages = ["bovid"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The suite has exactly two entry points, named for what they exercise rather than the default
+# test_*.py convention: unit_tests.py (isolated, runs anywhere) and integration_tests.py (real
+# models/artifacts, skips cleanly when absent). conftest.py and _bovid_reqs.py are infrastructure.
+python_files = ["unit_tests.py", "integration_tests.py"]
+markers = [
+    "slow: exercises real training/inference at cost (deselect with -m 'not slow')",
+]
+
+[tool.mypy]
+# 3.12 = the CI interpreter (and the floor at which numpy's shipped stubs parse). The package
+# still supports 3.10 at runtime; this only sets the version mypy analyses under.
+python_version = "3.12"
+# The codebase is largely unannotated, so this is deliberately NON-strict: it does not demand type
+# hints (no disallow_untyped_defs). What it DOES catch is real bugs in the code that exists --
+# unreachable branches, redundant casts, and `# type: ignore`s that no longer apply. Third-party
+# libs (cv2, ultralytics, streamlit, ...) ship no stubs, so their missing imports are ignored
+# rather than drowning the signal.
+ignore_missing_imports = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+exclude = ["experiments/", "\\.venv", "build/"]
+
+[tool.ruff]
+line-length = 110      # matches the existing code; not an aspiration to reformat everything
+target-version = "py310"
+exclude = ["experiments", ".venv", ".venv-export"]
+
+[tool.ruff.lint]
+# Pyflakes (F) catches real bugs -- unused imports/names, f-strings without placeholders,
+# redefinitions. pycodestyle (E) is style. Import sorting (I) keeps diffs clean. bugbear (B)
+# catches likely bugs -- unused loop vars, blind-except asserts, zip() length mismatches.
+select = ["E", "F", "I", "B"]
+ignore = ["E501"]      # line length is not enforced as a hard error

@@ -1,0 +1,92 @@
+{
+  "sizes_mb": {
+    "detector (yolov8n_float32.tflite)": 12.87,
+    "classifier (best_float32.tflite)": 20.44,
+    "class names (yolov8n_names.yaml)": 0.0,
+    "classifier metadata (metadata.yaml)": 0.0,
+    "TOTAL": 33.31
+  },
+  "runs": {
+    "1": {
+      "cold_start": {
+        "import_s": 0.3991954170051031,
+        "load_models_s": 0.06302766600856557,
+        "first_predict_s": 0.3054768750007497,
+        "total_s": 0.7676999580144184
+      },
+      "steady_state": {
+        "detect": {
+          "median": 120.1,
+          "p95": 129.4
+        },
+        "crop": {
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "classify": {
+          "median": 21.6,
+          "p95": 23.5
+        },
+        "total": {
+          "median": 143.7,
+          "p95": 155.0
+        },
+        "peak_rss_mb": 237.1
+      }
+    },
+    "2": {
+      "cold_start": {
+        "import_s": 0.11778741700982209,
+        "load_models_s": 0.010775292001198977,
+        "first_predict_s": 0.13122016699344385,
+        "total_s": 0.2597828760044649
+      },
+      "steady_state": {
+        "detect": {
+          "median": 73.8,
+          "p95": 74.7
+        },
+        "crop": {
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "classify": {
+          "median": 13.3,
+          "p95": 14.1
+        },
+        "total": {
+          "median": 88.7,
+          "p95": 90.1
+        },
+        "peak_rss_mb": 237.1
+      }
+    },
+    "4": {
+      "cold_start": {
+        "import_s": 0.11547558299207594,
+        "load_models_s": 0.011025166997569613,
+        "first_predict_s": 0.08636054099770263,
+        "total_s": 0.21286129098734818
+      },
+      "steady_state": {
+        "detect": {
+          "median": 54.6,
+          "p95": 72.3
+        },
+        "crop": {
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "classify": {
+          "median": 10.0,
+          "p95": 14.4
+        },
+        "total": {
+          "median": 65.9,
+          "p95": 87.9
+        },
+        "peak_rss_mb": 239.0
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Extra dependencies for experiments/mobilenet_haar_baseline.py only.
+# Kept separate from the top-level requirements.txt because TensorFlow lags behind new
+# Python releases -- at time of writing there is no tensorflow wheel at all for this
+# repo's .venv (Python 3.14). Use a Python version TensorFlow currently supports
+# (check https://pypi.org/project/tensorflow/ for the current range) in a separate venv
+# if you want to run this specific experiment.
+tensorflow>=2.16
+openpyxl>=3.1

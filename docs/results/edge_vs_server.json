@@ -1,0 +1,42 @@
+{
+  "test": [
+    {
+      "pipeline": "server (torch)",
+      "top1": 0.485,
+      "top3": 0.848,
+      "detector_crops": 0.939,
+      "ms_per_image": 172.4,
+      "agrees_with_server": 1.0,
+      "same_crop_method": 1.0
+    },
+    {
+      "pipeline": "edge (tflite, torch-free)",
+      "top1": 0.515,
+      "top3": 0.848,
+      "detector_crops": 0.697,
+      "ms_per_image": 143.1,
+      "agrees_with_server": 0.818,
+      "same_crop_method": 0.697
+    }
+  ],
+  "valid": [
+    {
+      "pipeline": "server (torch)",
+      "top1": 0.379,
+      "top3": 0.682,
+      "detector_crops": 0.939,
+      "ms_per_image": 166.2,
+      "agrees_with_server": 1.0,
+      "same_crop_method": 1.0
+    },
+    {
+      "pipeline": "edge (tflite, torch-free)",
+      "top1": 0.424,
+      "top3": 0.697,
+      "detector_crops": 0.561,
+      "ms_per_image": 141.5,
+      "agrees_with_server": 0.894,
+      "same_crop_method": 0.621
+    }
+  ]
+}

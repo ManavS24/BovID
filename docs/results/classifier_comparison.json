@@ -1,0 +1,60 @@
+{
+  "test": [
+    {
+      "model": "best.pt [ultralytics]",
+      "size_mb": 10.3,
+      "top1": 0.485,
+      "top3": 0.848,
+      "ms_per_image": 10.0,
+      "mean_conf": 0.762,
+      "agree_with_baseline": 1.0
+    },
+    {
+      "model": "best_int8_dynrange.tflite [tflite]",
+      "size_mb": 5.2,
+      "top1": 0.061,
+      "top3": 0.152,
+      "ms_per_image": 9.3,
+      "mean_conf": NaN,
+      "agree_with_baseline": 0.061
+    },
+    {
+      "model": "best_int8.tflite [tflite]",
+      "size_mb": 5.2,
+      "top1": 0.061,
+      "top3": 0.182,
+      "ms_per_image": 8.8,
+      "mean_conf": 0.55,
+      "agree_with_baseline": 0.061
+    }
+  ],
+  "valid": [
+    {
+      "model": "best.pt [ultralytics]",
+      "size_mb": 10.3,
+      "top1": 0.379,
+      "top3": 0.682,
+      "ms_per_image": 10.2,
+      "mean_conf": 0.813,
+      "agree_with_baseline": 1.0
+    },
+    {
+      "model": "best_int8_dynrange.tflite [tflite]",
+      "size_mb": 5.2,
+      "top1": 0.045,
+      "top3": 0.136,
+      "ms_per_image": 9.3,
+      "mean_conf": NaN,
+      "agree_with_baseline": 0.045
+    },
+    {
+      "model": "best_int8.tflite [tflite]",
+      "size_mb": 5.2,
+      "top1": 0.091,
+      "top3": 0.152,
+      "ms_per_image": 8.7,
+      "mean_conf": 0.606,
+      "agree_with_baseline": 0.091
+    }
+  ]
+}

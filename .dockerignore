@@ -1,0 +1,28 @@
+# Keep the build context small: exclude everything heavy or irrelevant to the image.
+.venv
+.venv-export
+.git
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+runs
+experiments
+docs
+tests
+
+# Data: the full dataset is large. The server image copies only the small test split (for the
+# app's example images) explicitly in the Dockerfile, so exclude the bulk here.
+datasets/indianbovine1/train
+datasets/indianbovine1/valid
+datasets/indianbovine2
+datasets/bovine_crops
+datasets/bovine_cls
+
+# Model by-products not needed at serve time (keep best_saved_model/metadata.yaml -- the edge
+# image needs it for class names; a parent-dir exclude can't be re-included, so target files).
+models/best/best_saved_model/*.tflite
+models/best/best_saved_model/schema*
+models/best/best_saved_model/*.json
+models/pretrained/*.onnx*
+models/pretrained/yolov8n_saved_model
