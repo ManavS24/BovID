@@ -10,8 +10,8 @@ from pathlib import Path
 import streamlit as st
 
 from bovid import config
+from bovid.edge import EdgePipeline
 from bovid.logging_conf import setup_logging
-from bovid.predict import load_model, predict
 from bovid.utils import bgr_to_pil
 
 setup_logging()
@@ -21,7 +21,9 @@ st.set_page_config(page_title="Indian Bovine Breed Classifier", page_icon="🐄"
 
 @st.cache_resource
 def get_model():
-    return load_model()
+    """The torch-free edge pipeline — same PredictionResult contract as the server path, but
+    33 MB of TFLite and no PyTorch, so the demo runs on a small CPU box."""
+    return EdgePipeline()
 
 
 @st.cache_data
@@ -100,13 +102,13 @@ if uploaded_file is not None:
         tmp_path = tmp.name
     # Narrow: only a corrupt-upload OSError gets a friendly message; other errors propagate.
     try:
-        result = predict(tmp_path, model=get_model())
+        result = get_model().predict(tmp_path)
     except OSError as e:
         st.error(f"That file could not be read as an image. ({e})")
     finally:
         os.unlink(tmp_path)
 elif chosen_example:
-    result = predict(chosen_example, model=get_model())
+    result = get_model().predict(chosen_example)
 
 if result:
     render_result(result)
