@@ -5,11 +5,11 @@ Identify the breed of an Indian cow or buffalo from a single photograph. A two-s
 farmer's phone or low-power device** — no server, no connectivity, no PyTorch on the device.
 
 **▶ [Live demo](REPLACE_WITH_YOUR_DEPLOY_URL)** — the torch-free edge pipeline running in the
-browser. Upload a cow/buffalo photo or click an example.
+browser. Upload a cow/buffalo photo or click an example. **[▶ Watch a 60s demo](docs/demo.mp4).**
 
-<!-- Demo GIF: record a 60–90s screen capture of upload → the "what the classifier sees" crop →
-top-3 + confidence banner, export it to docs/demo.gif, and uncomment the line below.
-![BovID demo](docs/demo.gif) -->
+<!-- Inline player on GitHub: after pushing, either drag docs/demo.mp4 into the README via
+GitHub's web editor (auto-embeds a player), or set the raw URL in the tag below:
+<video src="https://raw.githubusercontent.com/<user>/BovID/main/docs/demo.mp4" controls muted></video> -->
 
 ```bash
 bovid predict cow.jpg
