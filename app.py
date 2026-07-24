@@ -10,9 +10,13 @@ from pathlib import Path
 import streamlit as st
 
 from bovid import config
-from bovid.edge import EdgePipeline
 from bovid.logging_conf import setup_logging
 from bovid.utils import bgr_to_pil
+
+# The hosted demo runs the torch-free edge pipeline (TFLite, ~33 MB, no torch/ultralytics): it
+# fits free hosting and needs no weight download since the TFLite weights are committed. Set
+# BOVID_APP_BACKEND=server on a full checkout to use the torch yolov8x path instead.
+BACKEND = os.environ.get("BOVID_APP_BACKEND", "edge").lower()
 
 setup_logging()
 
@@ -20,10 +24,15 @@ st.set_page_config(page_title="Indian Bovine Breed Classifier", page_icon="🐄"
 
 
 @st.cache_resource
-def get_model():
-    """The torch-free edge pipeline — same PredictionResult contract as the server path, but
-    33 MB of TFLite and no PyTorch, so the demo runs on a small CPU box."""
-    return EdgePipeline()
+def get_predictor():
+    """A `predict(path) -> PredictionResult` callable for the selected backend. Both the edge and
+    server paths return the same PredictionResult, so the rest of the app is backend-agnostic."""
+    if BACKEND == "server":
+        from bovid.predict import load_model, predict
+        model = load_model()
+        return lambda path: predict(path, model=model)
+    from bovid.edge import EdgePipeline
+    return EdgePipeline().predict
 
 
 @st.cache_data
@@ -64,6 +73,10 @@ with st.sidebar:
         "predicts the breed. Both stages use identical preprocessing at training and "
         "inference time."
     )
+    st.caption(
+        "Running the **torch-free edge pipeline** (TFLite, ~33 MB, no PyTorch)."
+        if BACKEND != "server" else "Running the **server pipeline** (torch + yolov8x)."
+    )
     st.subheader("Measured accuracy")
     st.metric("Top-1", "53.5% ± 4.5%")
     st.metric("Top-3", "78.2% ± 2.9%")
@@ -102,13 +115,13 @@ if uploaded_file is not None:
         tmp_path = tmp.name
     # Narrow: only a corrupt-upload OSError gets a friendly message; other errors propagate.
     try:
-        result = get_model().predict(tmp_path)
+        result = get_predictor()(tmp_path)
     except OSError as e:
         st.error(f"That file could not be read as an image. ({e})")
     finally:
         os.unlink(tmp_path)
 elif chosen_example:
-    result = get_model().predict(chosen_example)
+    result = get_predictor()(chosen_example)
 
 if result:
     render_result(result)

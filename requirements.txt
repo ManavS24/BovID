@@ -1,17 +1,14 @@
-# Flexible development install (compatible version ranges from pyproject.toml).
+# Runtime dependencies for the HOSTED DEMO (Hugging Face Spaces / Streamlit Community Cloud).
 #
-#   core        the torch-free edge pipeline only (opencv, Pillow, numpy, PyYAML)
-#   [server]    ultralytics/torch: training, evaluation, the server inference path
-#   [app]       Streamlit demo (app.py)
-#   [audit]     dataset watermark audit (`bovid audit`; needs `brew install tesseract`)
-#   [export]    ONNX/TFLite export (TFLite/SavedModel additionally need TensorFlow, Python 3.12)
-#   [dev]       test suite + ruff
-#   [edge]      the on-device runtime (ai-edge-litert; installs on Python 3.10-3.14, no torch)
+# Torch-free by design: installs only the edge pipeline + Streamlit, so the build stays small and
+# needs no weight download — the TFLite weights are committed under models/. Both platforms
+# auto-install this file; the system libs OpenCV needs (libGL/glib) come from packages.txt.
 #
-# For an EXACT, reproducible build use the lock file instead:
+#   .[edge]   ai-edge-litert TFLite runtime + core (opencv, Pillow, numpy, PyYAML) — no torch
+#   .[app]    Streamlit
+#
+# For LOCAL DEVELOPMENT install the full stack instead:
+#     pip install -e ".[server,app,dev]"        # training, server path, tests
+# For an EXACT, reproducible build use the lock file:
 #     pip install -e . -r requirements-lock.txt
-#
-# On a device, install only the light path (no torch):
-#     pip install "bovid[edge]"
-#     bovid predict --edge photo.jpg
--e .[server,app,audit,export,dev,edge]
+-e .[edge,app]

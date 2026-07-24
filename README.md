@@ -4,6 +4,13 @@ Identify the breed of an Indian cow or buffalo from a single photograph. A two-s
 **detect → crop → classify** pipeline over **22 indigenous breeds**, built to run **offline on a
 farmer's phone or low-power device** — no server, no connectivity, no PyTorch on the device.
 
+**▶ [Live demo](REPLACE_WITH_YOUR_DEPLOY_URL)** — the torch-free edge pipeline running in the
+browser. Upload a cow/buffalo photo or click an example.
+
+<!-- Demo GIF: record a 60–90s screen capture of upload → the "what the classifier sees" crop →
+top-3 + confidence banner, export it to docs/demo.gif, and uncomment the line below.
+![BovID demo](docs/demo.gif) -->
+
 ```bash
 bovid predict cow.jpg
 #  - Red_Sindhi: 0.783
