@@ -4,12 +4,13 @@ Identify the breed of an Indian cow or buffalo from a single photograph. A two-s
 **detect → crop → classify** pipeline over **22 indigenous breeds**, built to run **offline on a
 farmer's phone or low-power device** — no server, no connectivity, no PyTorch on the device.
 
-**▶ [Live demo](REPLACE_WITH_YOUR_DEPLOY_URL)** — the torch-free edge pipeline running in the
-browser. Upload a cow/buffalo photo or click an example. **[▶ Watch a 60s demo](docs/demo.mp4).**
+**[▶ Watch a 60s demo](docs/demo.mp4)** — the torch-free edge pipeline running end to end. To try
+it yourself, the browser demo runs locally in two commands: upload a cow/buffalo photo or click one
+of the bundled examples. See the [Quickstart](#quickstart).
 
-<!-- Inline player on GitHub: after pushing, either drag docs/demo.mp4 into the README via
-GitHub's web editor (auto-embeds a player), or set the raw URL in the tag below:
-<video src="https://raw.githubusercontent.com/<user>/BovID/main/docs/demo.mp4" controls muted></video> -->
+<!-- Inline player: drag docs/demo.mp4 into the README via GitHub's web editor to auto-embed a
+player. A raw.githubusercontent.com <video> tag also works, but only once this repo is public —
+while it is private the raw URL 404s for everyone, so the relative link above is used instead. -->
 
 ```bash
 bovid predict cow.jpg
